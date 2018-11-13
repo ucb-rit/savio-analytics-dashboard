@@ -5,4 +5,4 @@ SQL_STATEMENT="select projects.\"Project Name\", projects.\"Faculty Email\", req
 
 RESULT=$(sqlite3 db.sqlite3 "$SQL_STATEMENT")
 
-echo $RESULT
+echo -n $RESULT

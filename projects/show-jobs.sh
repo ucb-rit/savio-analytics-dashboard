@@ -1,5 +1,7 @@
 #!/bin/bash
 
+BASEDIR=$(dirname $0)
+
 START_TIME=$1
 END_TIME=$2
 
@@ -10,9 +12,15 @@ while IFS='|' read -a LINE; do
   if [[ "$ACCOUNT" == "cortex" ]]; then
     continue
   fi
+  if [[ "${LINE[2]}" == "Unknown" ]]; then # Ignore if no end date
+    continue
+  fi
+  if [[ "${LINE[2]}" == "End" ]]; then # Ignore first line
+    continue
+  fi
   END_TIMESTAMP="$(date "+%s" --date="${LINE[2]}")000000000"
   IFS='_' read -a TYPE <<< $ACCOUNT
-  IFS='|' read -a DEPARTMENT <<< $(./lookup.sh "$ACCOUNT")
+  IFS='|' read -a DEPARTMENT <<< $(./$BASEDIR/lookup.sh "$ACCOUNT")
   IFS=' ' read -a STATE <<< "${LINE[7]}"
   echo "jobs,job_id=${LINE[0]},account=${ACCOUNT},type=${TYPE[0]},department=$(printf '%q' "${DEPARTMENT[2]}"),cpus=${LINE[4]},partition=${LINE[5]},state=${STATE[0]} raw_time=${LINE[8]},cpu_time=${LINE[9]} $END_TIMESTAMP"
 done

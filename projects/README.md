@@ -7,7 +7,7 @@ These scripts help map the project account to the department of the project PI s
 1. Use `lookup.sh <account_name>` to get the department data associated with an account. Use `show-jobs-today.sh` to get status of jobs in the past few days.
 
 ## Future
-This is currently first attempt, and after it is shown to work I'll put more work into cleaning up the data.
+This is currently a first attempt, and after it is shown to work I'll put more work into cleaning up the data.
 - Manually clean up spreadsheets
 - Manually clean up the self-reported department (e.g., "MCB" and "Molecular and Cell Biology" mean the same thing)
 - Categorize departments into larger domains (e.g., "Biology" or "Mathematics")

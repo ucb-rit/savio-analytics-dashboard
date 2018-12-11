@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  grafana:
+    image: grafana/grafana:5.2.2
+    ports:
+      - '3000:3000' # Web UI
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: 'true'
+      GF_AUTH_ANONYMOUS_ORG_NAME: 'public'
+      GF_ANALYTICS_REPORTING_ENABLED: 'false'
+    volumes:
+      - /home/vagrant/grafana:/var/lib/grafana
+  influxdb:
+    image: influxdb
+    environment:
+      INFLUXDB_DB: 'telegraf'
+      INFLUXDB_HTTP_AUTH_ENABLED: 'false'
+    volumes:
+      - /home/vagrant/influxdb:/var/lib/influxdb
+  telegraf:
+    image: telegraf
+    volumes:
+      - /home/vagrant/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+      - /home/vagrant/scripts:/home/vagrant/scripts

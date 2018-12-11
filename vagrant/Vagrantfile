@@ -1,0 +1,9 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/bionic64"
+  config.vm.provision "file", source: "telegraf.conf", destination: "~/telegraf.conf"
+  config.vm.provision "file", source: "docker-compose.yml", destination: "~/docker-compose.yml"
+  config.vm.provision "file", source: "scripts", destination: "~/scripts"
+  config.vm.provision :shell, path: "bootstrap.sh"
+  config.vm.network :forwarded_port, host: 3000, guest: 3000
+  config.vm.provision :shell, path: "start.sh"
+end

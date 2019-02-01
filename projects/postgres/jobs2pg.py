@@ -1,8 +1,13 @@
-import psycopg2
-conn = psycopg2.connect('dbname=grafana')
-curr = conn.cursor()
+import fileinput
+for line in fileinput.input():
+  # job_id|account|type=|department|cpus|partition|state|req_nodes|alloc_nodes|raw_time|cpu_time|end_time
+  print(line.split('|'))
 
-curr.execute("""CREATE TABLE IF NOT EXISTS jobs (
+import psycopg2
+conn = psycopg2.connect(dbname='grafana')
+cur = conn.cursor()
+
+cur.execute("""CREATE TABLE IF NOT EXISTS jobs (
   job_id TEXT PRIMARY KEY,
   account TEXT,
   type TEXT,
@@ -14,13 +19,13 @@ curr.execute("""CREATE TABLE IF NOT EXISTS jobs (
   alloc_nodes INTEGER,
   raw_time DOUBLE PRECISION,
   cpu_time DOUBLE PRECISION, 
-  start_time TIMESTAMP WITH TIMEZONE, 
-  end_time TIMESTAMP WITH TIMEZONE);""")
-curr.execute("""CREATE TABLE IF NOT EXISTS job_nodes (
+  start_time TIMESTAMP WITH TIME ZONE, 
+  end_time TIMESTAMP WITH TIME ZONE);""")
+cur.execute("""CREATE TABLE IF NOT EXISTS job_nodes (
   job_id TEXT,
   hostname TEXT);""")
-curr.execute("""CREATE TABLE IF NOT EXISTS cpu (
-  timestamp TIMESTAMP WITH TIMEZONE,
+cur.execute("""CREATE TABLE IF NOT EXISTS cpu (
+  timestamp TIMESTAMP WITH TIME ZONE,
   host TEXT,
   cpu TEXT,
   usage_guest_nice DOUBLE PRECISION,
@@ -32,5 +37,4 @@ curr.execute("""CREATE TABLE IF NOT EXISTS cpu (
   usage_steal DOUBLE PRECISION,
   usage_system DOUBLE PRECISION,
   usage_user DOUBLE PRECISION);""")
-
 

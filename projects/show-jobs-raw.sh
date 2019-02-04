@@ -22,7 +22,7 @@ while IFS='|' read -a LINE; do
   END_TIMESTAMP="$(date "+%s" --date="${LINE[2]}")"
   START_TIMESTAMP="$(date "+%s" --date="${LINE[1]}")"
   IFS='_' read -a TYPE <<< $ACCOUNT
-  IFS='|' read -a DEPARTMENT <<< $($BASEDIR/lookup.sh "$ACCOUNT")
+  DEPARTMENT=$($BASEDIR/lookup.sh "$ACCOUNT" | sed 's/|//g') # Remove pipe (if there is one) so it doesn't interfere with output
   IFS=' ' read -a STATE <<< "${LINE[7]}"
   
   if [[ "${LINE[10]}" == "None assigned" ]]; then
@@ -30,5 +30,5 @@ while IFS='|' read -a LINE; do
   fi
 
   # job_id|account|type|department|cpus|partition|state|req_nodes|alloc_nodes|raw_time|cpu_time|end_time|start_time|node_list
-  echo "${LINE[0]}|${ACCOUNT}|${TYPE[0]}|${DEPARTMENT[2]}|${LINE[4]}|${LINE[5]}|${STATE[0]}|${LINE[8]}|${LINE[9]}|${LINE[11]}|${LINE[12]}|$END_TIMESTAMP|$START_TIMESTAMP|${LINE[10]}|"
+  echo "${LINE[0]}|${ACCOUNT}|${TYPE[0]}|$DEPARTMENT|${LINE[4]}|${LINE[5]}|${STATE[0]}|${LINE[8]}|${LINE[9]}|${LINE[11]}|${LINE[12]}|$END_TIMESTAMP|$START_TIMESTAMP|${LINE[10]}|"
 done

@@ -1,9 +1,12 @@
-# Job Data to Postgres
-Python script to load job data from stdin into Postgres
+# Data to Postgres
+Python scripts to:
+- load job data from stdin into Postgres
+- load CPU data from InfluxDB into Postgres
 
 ## Requirements
 - Python 3
 - [psycopg2](http://initd.org/psycopg/)
+- [influxdb-python](https://github.com/influxdata/influxdb-python)
 
 ```bash
 ../show-jobs-raw.sh $START_DATE $END_DATE | python3 jobs2pg.py

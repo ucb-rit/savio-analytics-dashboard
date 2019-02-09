@@ -2,8 +2,11 @@
 These scripts help map the project account to the department of the project PI so that job/usage data can be correlated with department. Our SLURM database doesn't include department or the email of the PI.
 
 ## How it works
-1. Download the projects spreadsheets and the project requests spreadsheets for each year. The projects speadsheet should be named `BRC-Projects - All-Projects.csv` and the project requests should be a .csv with `Project Requests` somewhere in the name, such as `Savio Project Requests - Project-Requests-2016-2017.csv`.
-1. Load the data from `.csv` files into a SQLite database using `import.sh`
+1. Download the spreadsheets as `.tsv` files. They should be named as follows:
+    - `BRC-Projects - All-Projects.tsv` - For the all projects spreadsheet
+    - `*Project Requests*.tsv` - For each year of project requests
+    - `Department Name Cleanups - Sheet1.tsv` - For the spreadsheet of clean department names 
+1. Load the data from `.tsv` files into a SQLite database using `import.sh`
 1. Use `lookup.sh <account_name>` to get the department data associated with an account. Use `show-jobs-today.sh` to get status of jobs in the past few days.
 
 ## Future

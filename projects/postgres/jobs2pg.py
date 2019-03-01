@@ -25,19 +25,7 @@ cur.execute("""CREATE TABLE IF NOT EXISTS jobs (
 cur.execute("""CREATE TABLE IF NOT EXISTS job_nodes (
   job_id TEXT,
   hostname TEXT);""")
-cur.execute("""CREATE TABLE IF NOT EXISTS cpu (
-  timestamp TIMESTAMP WITH TIME ZONE,
-  host TEXT,
-  cpu TEXT,
-  usage_guest_nice DOUBLE PRECISION,
-  usage_idle DOUBLE PRECISION,
-  usage_iowait DOUBLE PRECISION,
-  usage_irq DOUBLE PRECISION,
-  usage_nice DOUBLE PRECISION,
-  usage_softirq DOUBLE PRECISION,
-  usage_steal DOUBLE PRECISION,
-  usage_system DOUBLE PRECISION,
-  usage_user DOUBLE PRECISION);""")
+cur.execute('GRANT SELECT ON ALL TABLES IN SCHEMA public TO grafana;')
 
 line_count = 0
 for line in fileinput.input():

@@ -2,3 +2,4 @@ pip-selfcheck.json
 bin/*
 include/*
 lib/*
+influx_config.py

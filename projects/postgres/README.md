@@ -8,6 +8,8 @@ Python scripts to:
 - [psycopg2](http://initd.org/psycopg/)
 - [influxdb-python](https://github.com/influxdata/influxdb-python)
 
+- Copy `influx_config.py.example` to `influx_config.py` and fill in appropriate fields.
+
 ```bash
 ../show-jobs-raw.sh $START_DATE $END_DATE | python3 jobs2pg.py
 ```

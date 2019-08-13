@@ -2,8 +2,9 @@
 
 BASEDIR=$(dirname $0)
 
-# Activate virtualenv
-source /home/nicolaschan/venv/bin/activate
+# Activate conda environment
+source /home/nicolaschan/.bashrc
+conda activate dashboard
 
 # Collect job data
 $BASEDIR/load-jobs-today-rest.sh

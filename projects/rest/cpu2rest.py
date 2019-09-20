@@ -9,22 +9,26 @@ client = InfluxDBClient(influx_config.hostname, influx_config.port, influx_confi
 
 cpu_data = client.query("""SELECT "usage_guest", "usage_guest_nice", "usage_idle", "usage_iowait", "usage_irq", "usage_nice", "usage_softirq", "usage_steal", "usage_system", "usage_user" FROM "short"."cpu" WHERE time >= now() - 25h GROUP BY host""")
 
-def make_transfer_row(host):
-    def transfer_row(result):
-        result['timestamp'] = result['time']
-        requests.post('http://scgup-dev.lbl.gov:8888/mybrc-rest/cpus/', data=result)
-    return transfer_row
-
-def transfer_host(item):
+# {'name': 'cpu', 'tags': {'host': 'n0301.savio2'}, 'columns': ['time', 'usage_guest', 'usage_guest_nice', 'usage_idle', 'usage_iowait', 'usage_irq', 'usage_nice', 'usage_softirq', 'usage_steal', 'usage_system', 'usage_user'], 'values': [['2019-02-25T22:29:00Z', 0, 0, 0.0187500000174623, 0, 0, 0, 0.0020833333333314386, 0, 1.887499999999515, 98.09166666663562]]}]}
+flattened_data = []
+for item in cpu_data.items():
     host, data = item[0][1]['host'], item[1]
     for row in data:
-        make_transfer_row(host)(row)
-    print('Processed', host)
+        row['timestamp'] = row['time']
+        del row['time']
+        row['host'] = { 'name': host }
+        flattened_data.append(row)
 
-# {'name': 'cpu', 'tags': {'host': 'n0301.savio2'}, 'columns': ['time', 'usage_guest', 'usage_guest_nice', 'usage_idle', 'usage_iowait', 'usage_irq', 'usage_nice', 'usage_softirq', 'usage_steal', 'usage_system', 'usage_user'], 'values': [['2019-02-25T22:29:00Z', 0, 0, 0.0187500000174623, 0, 0, 0, 0.0020833333333314386, 0, 1.887499999999515, 98.09166666663562]]}]}
-for item in cpu_data.items():
-    transfer_host(item) 
-    conn.commit()
+# Based on Matthew's example code for using his CPU batch API
+import json
+import zipfile
+from io import BytesIO 
 
-cur.close()
-conn.close()
+buf = BytesIO()
+with zipfile.ZipFile(buf, mode='w', compression=zipfile.ZIP_DEFLATED) as zip_file:
+    contained_file = BytesIO()
+    contained_file.write(json.dumps(flattened_data).encode())
+    zip_file.writestr("cpu_data.json", contained_file.getvalue())
+buf.seek(0)
+r = requests.put('http://scgup-dev.lbl.gov:8888/mybrc-rest/upload_cpu_data/cpu_data.zip', files={"file": buf})
+print(r)

@@ -1,0 +1,5 @@
+hostname = 'influx.brc'
+port = 8086
+table = 'cpu'
+password = '<PUT PASSWORD HERE>'
+database = 'telegraf'

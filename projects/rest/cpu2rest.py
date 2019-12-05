@@ -3,6 +3,8 @@ import requests
 
 from influxdb import InfluxDBClient
 import influx_config
+import rest_config
+
 client = InfluxDBClient(influx_config.hostname, influx_config.port, influx_config.table, influx_config.password, influx_config.database, ssl=True, verify_ssl=False)
 
 # '('cpu', {'host': 'n0301.savio2'})': [{'time': '2019-02-25T21:37:00Z', 'usage_guest': 0, 'usage_guest_nice': 0, 'usage_idle': 0.01458302953377833, 'usage_iowait': 0, 'usage_irq': 0, 'usage_nice': 0, 'usage_softirq': 0.004166579862909589, 'usage_steal': 0, 'usage_system': 1.8624611987227653, 'usage_user': 98.11878919174328}]
@@ -30,5 +32,7 @@ with zipfile.ZipFile(buf, mode='w', compression=zipfile.ZIP_DEFLATED) as zip_fil
     contained_file.write(json.dumps(flattened_data).encode())
     zip_file.writestr("cpu_data.json", contained_file.getvalue())
 buf.seek(0)
-r = requests.put('http://scgup-dev.lbl.gov:8888/mybrc-rest/upload_cpu_data/cpu_data.zip', files={"file": buf})
+headers = {'Authorization': rest_config.TOKEN}
+r = requests.put(rest_config.MYBRC_REST_URL + '/upload_cpu_data/cpu_data.zip', files={"file": buf}, headers=headers)
 print(r)
+print(r.text)
